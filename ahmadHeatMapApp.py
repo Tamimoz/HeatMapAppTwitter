@@ -40,6 +40,10 @@ for tweet in tweets:
 
 print("Locations of user tweets: \n" + str(user_locations))
 
+#putting all of the location data (unfiltered) in a data frame and then printing it
+tweet_text_location_table = pd.DataFrame(data=user_locations, columns=["Location"])
+print(tweet_text_location_table)
+
 #Editing the search word with a retweet filter
 filtered_search = search_word + " -filter:retweets"
 
@@ -58,5 +62,9 @@ for tweet in filtered_tweets:
     if tweet.user.location != '':
         filtered_user_locations.append(tweet.user.location)
 print("Locations of filtered user tweets: \n" + str(filtered_user_locations))
+
+#putting all of the location data (filtered) in a data frame and then printing it
+filtered_tweet_text_location_table = pd.DataFrame(data=filtered_user_locations, columns=["Location"])
+print(filtered_tweet_text_location_table)
 
 
