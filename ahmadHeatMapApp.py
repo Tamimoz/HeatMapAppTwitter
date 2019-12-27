@@ -17,7 +17,7 @@ api = tw.API(auth, wait_on_rate_limit=True)
 # api.update_status("Look, I'm tweeting from #Python using the twitter API!")
 
 #Define search term and date since as variables
-search_word = "#wildfires"
+search_word = "climate+change"
 date_since = "2018-11-10"
 
 #Defining most_recent_count (number of mmost recent tweets to display)
@@ -31,9 +31,14 @@ tweets = tw.Cursor(api.search,
 
 print("Before the retweet filter:\n")
 
-#Iterate over and print tweets 
+user_locations= []
+#Iterate over and print tweets and append locations to a list
 for tweet in tweets:
     print(tweet.text +" tweeted on: " + str(tweet.created_at))
+    if tweet.user.location != '':
+        user_locations.append(tweet.user.location)
+
+print("Locations of user tweets: \n" + str(user_locations))
 
 #Editing the search word with a retweet filter
 filtered_search = search_word + " -filter:retweets"
@@ -46,5 +51,12 @@ filtered_tweets = tw.Cursor(api.search,
 
 print("\n\nAfter the retweet filter:\n")
 
+filtered_user_locations = []
+#Iterate over and print tweets 
 for tweet in filtered_tweets:
     print(tweet.text+" tweeted on: " + str(tweet.created_at))
+    if tweet.user.location != '':
+        filtered_user_locations.append(tweet.user.location)
+print("Locations of filtered user tweets: \n" + str(filtered_user_locations))
+
+
