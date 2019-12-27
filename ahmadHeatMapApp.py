@@ -28,7 +28,23 @@ tweets = tw.Cursor(api.search,
               q=search_word,
               lang="en",
               since=date_since).items(most_recent_count)
-              
+
+print("Before the retweet filter:\n")
+
 #Iterate over and print tweets 
 for tweet in tweets:
-    print(tweet.text)
+    print(tweet.text +" tweeted on: " + str(tweet.created_at))
+
+#Editing the search word with a retweet filter
+filtered_search = search_word + " -filter:retweets"
+
+#Collecting tweets with a specified search term with a retweet filter
+filtered_tweets = tw.Cursor(api.search, 
+                        q=filtered_search,
+                        lang="en",
+                        since_date=date_since).items(most_recent_count)
+
+print("\n\nAfter the retweet filter:\n")
+
+for tweet in filtered_tweets:
+    print(tweet.text+" tweeted on: " + str(tweet.created_at))
