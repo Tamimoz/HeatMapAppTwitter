@@ -28,6 +28,7 @@ tweets = tw.Cursor(api.search,
               q=search_word,
               lang="en",
               since=date_since).items(most_recent_count)
+              
 
 print("Before the retweet filter:\n")
 
