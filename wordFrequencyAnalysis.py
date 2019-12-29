@@ -30,22 +30,33 @@ api = tw.API(auth, wait_on_rate_limit=True)
 
 #Define search term and date since as variables
 search_word = "climate+change"
+filtered_search_word = search_word + " -filter:retweets"
 date_since = "2018-11-10"
 
 #Defining most_recent_count (number of mmost recent tweets to collect)
 most_recent_count = 1000
+def main():
+    #Collecting tweets, using .Cursor(), that contain the specified search terms 
+    tweets = tw.Cursor(api.search,
+                q=search_word,
+                lang="en",
+                since=date_since).items(most_recent_count)
 
-#Collecting tweets, using .Cursor(), that contain the specified search terms 
-tweets = tw.Cursor(api.search,
-              q=search_word,
-              lang="en",
-              since=date_since).items(most_recent_count)
+    all_tweets = [tweet.text for tweet in tweets]
 
-all_tweets = [tweet.text for tweet in tweets]
-all_tweets_no_urls = [remove_url(tweet) for tweet in all_tweets]
+    all_tweets_no_urls = [remove_url(tweet) for tweet in all_tweets]
 
-# Create a list of lists containing lowercase words for each tweet
-words_in_tweet = [tweet.lower().split() for tweet in all_tweets_no_urls]
+    # Create a list of lists containing lowercase words for each tweet
+    words_in_tweet = [tweet.lower().split() for tweet in all_tweets_no_urls]
+
+    # List of all words across tweets, flatten the original list
+    # to put all the words into one list
+    all_words_no_urls = list(itertools.chain(*words_in_tweet))
+
+    # Create counter
+    counts_no_urls = collections.Counter(all_words_no_urls)
+
+    print(counts_no_urls.most_common(15))
 
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
@@ -62,3 +73,7 @@ def remove_url(txt):
     """
 
     return " ".join(re.sub("([^0-9A-Za-z \t])|(\w+:\/\/\S+)", "", txt).split())
+
+
+if __name__ == '__main__':
+    main()
