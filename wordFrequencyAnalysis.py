@@ -33,12 +33,14 @@ search_word = "climate+change"
 filtered_search_word = search_word + " -filter:retweets"
 date_since = "2018-11-10"
 
-#Defining most_recent_count (number of mmost recent tweets to collect)
+#Defining most_recent_count (number of most recent tweets to collect)
+#and most common words number
 most_recent_count = 1000
+most_common_words = 15
 def main():
     #Collecting tweets, using .Cursor(), that contain the specified search terms 
     tweets = tw.Cursor(api.search,
-                q=search_word,
+                q=filtered_search_word,
                 lang="en",
                 since=date_since).items(most_recent_count)
 
@@ -56,7 +58,57 @@ def main():
     # Create counter
     counts_no_urls = collections.Counter(all_words_no_urls)
 
-    print(counts_no_urls.most_common(15))
+    print(counts_no_urls.most_common(most_common_words))
+
+    # Creating a dataframe for analysis and plotting
+    clean_tweets_no_urls = pd.DataFrame(counts_no_urls.most_common(most_common_words), columns=['words', 'count'])
+    print(clean_tweets_no_urls)
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    # Plot horizontal bar graph
+    clean_tweets_no_urls.sort_values(by='count').plot.barh(x='words',
+                        y='count',
+                        ax=ax,
+                        color="purple")
+
+    ax.set_title("Common Words Found in Tweets (Including All Words)")
+
+    plt.show()
+
+    #Downloading stopwords for additional cleanup
+    nltk.download('stopwords')
+    
+    #Stop words are words that do not add meaningful information
+    #to the text being analyzed
+    stop_words = set(stopwords.words('english'))
+
+    # Remove stop words from each tweet list of words
+    tweets_nsw = [[word for word in tweet_words if not word in stop_words]
+                for tweet_words in words_in_tweet]
+    
+    #flattening the list and creating a counter for most common words
+    all_words_nsw = list(itertools.chain(*tweets_nsw))
+
+    counts_nsw = collections.Counter(all_words_nsw)
+
+    print(counts_nsw.most_common(most_common_words))
+
+    # Creating a dataframe for analysis and plotting
+    clean_tweets_nsw = pd.DataFrame(counts_nsw.most_common(most_common_words), columns=['words', 'count'])
+    print(clean_tweets_nsw)
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    # Plot horizontal bar graph
+    clean_tweets_nsw.sort_values(by='count').plot.barh(x='words',
+                        y='count',
+                        ax=ax,
+                        color="blue")
+
+    ax.set_title("Common Words Found in Tweets (Without Stop Words)")
+
+    plt.show()
 
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
