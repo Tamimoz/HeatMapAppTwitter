@@ -110,6 +110,40 @@ def main():
 
     plt.show()
 
+    #Putting the collection words in a list
+    collection_words = ['climatechange', 'climate', 'change']
+
+    #Removing collection words from words in tweets
+    #Words should have no stop words and no collection words in them after
+    tweets_nsw_nc = [[w for w in word if not w in collection_words]
+                    for word in tweets_nsw]
+    
+    # Flatten list of words in clean tweets
+    all_words_nsw_nc = list(itertools.chain(*tweets_nsw_nc))
+
+    # Create counter of words in clean tweets
+    counts_nsw_nc = collections.Counter(all_words_nsw_nc)
+
+    print(counts_nsw_nc.most_common(most_common_words))
+
+    print("Number of unique words in tweets is: " +str(len(counts_nsw_nc)))
+
+    # Creating a dataframe for analysis and plotting
+    clean_tweets_ncw = pd.DataFrame(counts_nsw_nc.most_common(most_common_words), columns=['words', 'count'])
+    print(clean_tweets_ncw)
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    # Plot horizontal bar graph
+    clean_tweets_ncw.sort_values(by='count').plot.barh(x='words',
+                        y='count',
+                        ax=ax,
+                        color="red")
+
+    ax.set_title("Common Words Found in Tweets (Without Stop or Collection Words)")
+
+    plt.show()
+
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
     (i.e. it will remove the URL from the string).
