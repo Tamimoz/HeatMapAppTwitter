@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -7,8 +8,10 @@ import collections
 
 import tweepy as tw
 import nltk
+from nltk import bigrams
 from nltk.corpus import stopwords
 import re
+import networkx as nx
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -35,7 +38,7 @@ date_since = "2018-11-10"
 #Defining most_recent_count (number of most recent tweets to collect)
 #and most common words number
 most_recent_count = 1000
-most_common_words = 15
+most_common_bigrams = 30
 def main():
     #Collecting tweets, using .Cursor(), that contain the specified search terms 
     tweets = tw.Cursor(api.search,
@@ -67,6 +70,25 @@ def main():
     #Words should have no stop words and no collection words in them after
     tweets_nsw_nc = [[w for w in word if not w in collection_words]
                     for word in tweets_nsw]
+    
+    # Create list of lists containing bigrams in tweets
+    terms_bigram = [list(bigrams(tweet)) for tweet in tweets_nsw_nc]
+    
+    print("Original tweet: " + str(tweets_no_urls[0]))
+    print("Tweet after clean up: " + str(tweets_nsw_nc[0]))
+    print("Bigram of cleaned up tweet: " + str(terms_bigram[0]))
+
+    # Flatten list of bigrams in clean tweets
+    bigrams_list = list(itertools.chain(*terms_bigram))
+
+    # Create counter of words in clean bigrams
+    bigram_counts = collections.Counter(bigrams_list)
+
+    print(bigram_counts.most_common(most_common_bigrams))
+
+    bigram_df = pd.DataFrame(bigram_counts.most_common(most_common_bigrams), columns=['bigram','count'])
+
+    print(bigram_df)
 
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
