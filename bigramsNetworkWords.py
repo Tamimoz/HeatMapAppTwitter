@@ -49,6 +49,24 @@ def main():
     # Create a list of lists containing lowercase words for each tweet
     words_in_tweet = [tweet.lower().split() for tweet in tweets_no_urls]
 
+    #Downloading stopwords for additional cleanup
+    nltk.download('stopwords')
+    
+    #Stop words are words that do not add meaningful information
+    #to the text being analyzed
+    stop_words = set(stopwords.words('english'))
+
+    # Remove stop words from each tweet list of words
+    tweets_nsw = [[word for word in tweet_words if not word in stop_words]
+                for tweet_words in words_in_tweet]
+    
+    #Putting the collection words in a list
+    collection_words = ['climatechange', 'climate', 'change']
+
+    #Removing collection words from words in tweets
+    #Words should have no stop words and no collection words in them after
+    tweets_nsw_nc = [[w for w in word if not w in collection_words]
+                    for word in tweets_nsw]
 
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
