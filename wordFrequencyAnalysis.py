@@ -9,7 +9,6 @@ import tweepy as tw
 import nltk
 from nltk.corpus import stopwords
 import re
-import networkx
 
 import warnings
 warnings.filterwarnings("ignore")
