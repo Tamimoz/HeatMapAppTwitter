@@ -74,6 +74,18 @@ def main():
     plt.title("Sentiments from Tweets on Climate Change")
     plt.show()
 
+    # Remove polarity values equal to zero
+    sentiment_df = sentiment_df[sentiment_df.polarity != 0]
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Plot histogram with break at zero
+    sentiment_df.hist(bins=[-1, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1],
+                ax=ax,
+                color="red")
+
+    plt.title("Sentiments from Tweets on Climate Change (Omit 0 values)")
+    plt.show()
+
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
     (i.e. it will remove the URL from the string).
