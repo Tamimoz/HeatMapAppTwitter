@@ -59,6 +59,21 @@ def main():
 
     print(sentiment_values[0])
 
+    # Create dataframe containing the polarity value and tweet text
+    sentiment_df = pd.DataFrame(sentiment_values, columns=["polarity", "tweet"])
+
+    print(sentiment_df)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Plot histogram of the polarity values
+    sentiment_df.hist(bins=[-1, -0.75, -0.5, -0.25, 0.25, 0.5, 0.75, 1],
+                ax=ax,
+                color="blue")
+
+    plt.title("Sentiments from Tweets on Climate Change")
+    plt.show()
+
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
     (i.e. it will remove the URL from the string).
