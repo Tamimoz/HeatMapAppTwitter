@@ -47,7 +47,17 @@ def main():
 
     #Remove URL's from tweets
     tweets_no_urls = [remove_url(tweet.text) for tweet in tweets]
-    print(tweets_no_urls[0])
+
+    # Create textblob objects of the tweets
+    sentiment_objects = [TextBlob(tweet) for tweet in tweets_no_urls]
+
+    print(sentiment_objects[0].polarity)
+    print(sentiment_objects[0])
+
+    # Create list of polarity valuesx and tweet text
+    sentiment_values = [[tweet.sentiment.polarity, str(tweet)] for tweet in sentiment_objects]
+
+    print(sentiment_values[0])
 
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
