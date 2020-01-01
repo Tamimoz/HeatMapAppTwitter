@@ -86,6 +86,33 @@ def main():
     plt.title("Sentiments from Tweets on Climate Change (Omit 0 values)")
     plt.show()
 
+    #Analyzing another topic "Campfires"
+    new_search_term =  "#CampFire -filter:retweets"
+
+    campfire_tweets = tw.Cursor(api.search,
+                                q=new_search_term,
+                                lang="en",
+                                since='2019-09-23').items(most_recent_count)
+    
+    # Remove URLs and create textblob object for each tweet
+    campfire_tweets_no_urls_sentiment = [TextBlob(remove_url(tweet.text)) for tweet in campfire_tweets]
+
+    #Calculate polarity of tweets
+    campfire_sentiment_values = [[tweet.sentiment.polarity, str(tweet)] for tweet in campfire_tweets_no_urls_sentiment]
+
+    #Create dataframe containing polarity values and tweet text
+    campfire_sentiment_df = pd.DataFrame(campfire_sentiment_values, columns=["polarity","tweet])"])
+    campfire_sentiment_df=campfire_sentiment_df[campfire_sentiment_df.polarity != 0]
+
+    #plotting
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    campfire_sentiment_df.hist(bins=[-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1],
+            ax=ax, color="purple")
+
+    plt.title("Sentiments from Tweets on the Camp Fire")
+    plt.show()
+
 def remove_url(txt):
     """Replace URLs found in a text string with nothing 
     (i.e. it will remove the URL from the string).
